@@ -1,0 +1,310 @@
+{% extends "base.html" %}
+
+{% block title %}WebRuse — Change Username{% endblock %}
+
+{% block content %}
+
+<section
+    style="
+        max-width: 520px;
+        margin: 30px auto;
+        background: #fff;
+        border: 1px solid #c8c8c8;
+        box-sizing: border-box;
+    "
+>
+
+    <div
+        style="
+            padding: 12px 16px;
+            background: #f1f1f1;
+            border-bottom: 1px solid #c8c8c8;
+            font-size: 18px;
+            font-weight: bold;
+        "
+    >
+        Change Username
+    </div>
+
+    <div style="padding: 22px;">
+
+        <p
+            style="
+                margin-top: 0;
+                color: #555;
+                font-size: 14px;
+            "
+        >
+            Change the username of your WebRuse account.
+        </p>
+
+        <!-- COST -->
+
+        <div
+            style="
+                margin-bottom: 18px;
+                padding: 12px;
+                background: #f7f7f7;
+                border: 1px solid #ddd;
+                font-size: 14px;
+            "
+        >
+
+            <div
+                style="
+                    font-weight: bold;
+                    margin-bottom: 6px;
+                "
+            >
+                Username Change Cost
+            </div>
+
+            {% if user.id == 1 %}
+
+                <div
+                    style="
+                        font-size: 16px;
+                        font-weight: bold;
+                    "
+                >
+                    🆓 Free
+                </div>
+
+                <div
+                    style="
+                        margin-top: 5px;
+                        color: #777;
+                        font-size: 12px;
+                    "
+                >
+                    Your account can change its username for free.
+                </div>
+
+            {% else %}
+
+                <div
+                    style="
+                        display: flex;
+                        align-items: center;
+                        gap: 6px;
+                        font-size: 16px;
+                        font-weight: bold;
+                    "
+                >
+                    <img
+                        src="/static/webbux_28.png"
+                        alt="WebBux"
+                        style="
+                            width: 28px;
+                            height: 28px;
+                            object-fit: contain;
+                        "
+                    >
+
+                    1000 WebBux
+                </div>
+
+                <div
+                    style="
+                        margin-top: 8px;
+                        color: #777;
+                        font-size: 12px;
+                    "
+                >
+                    Your current balance:
+                    <strong>{{ user.webbux }}</strong>
+                    WebBux
+                </div>
+
+            {% endif %}
+
+        </div>
+
+        <!-- USERNAME -->
+
+        <label
+            for="newUsername"
+            style="
+                display: block;
+                margin-bottom: 6px;
+                font-weight: bold;
+                font-size: 13px;
+            "
+        >
+            New Username
+        </label>
+
+        <input
+            id="newUsername"
+            type="text"
+            maxlength="32"
+            value="{{ user.username }}"
+            style="
+                width: 100%;
+                box-sizing: border-box;
+                padding: 9px;
+                border: 1px solid #aaa;
+                font-size: 14px;
+            "
+        >
+
+        <div
+            style="
+                margin-top: 18px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 10px;
+            "
+        >
+
+            <a
+                href="/profile"
+                style="
+                    color: #1675d1;
+                    font-size: 13px;
+                "
+            >
+                Back to Profile
+            </a>
+
+            <button
+                type="button"
+                id="changeUsernameButton"
+                class="creator-create-button"
+            >
+                Change Username
+            </button>
+
+        </div>
+
+        <div
+            id="message"
+            style="
+                margin-top: 14px;
+                font-size: 13px;
+            "
+        ></div>
+
+    </div>
+
+</section>
+
+<script>
+
+const button =
+    document.getElementById("changeUsernameButton");
+
+const message =
+    document.getElementById("message");
+
+const isFree =
+    {{ "true" if user.id == 1 else "false" }};
+
+button.addEventListener("click", async function () {
+
+    const username =
+        document
+            .getElementById("newUsername")
+            .value
+            .trim();
+
+    if (!username) {
+
+        alert("Please enter a username.");
+
+        return;
+    }
+
+    if (username.length < 3) {
+
+        alert(
+            "Username must contain at least 3 characters."
+        );
+
+        return;
+    }
+
+    if (!isFree) {
+
+        const confirmed =
+            confirm(
+                "Changing your username will cost 1000 WebBux.\n\nContinue?"
+            );
+
+        if (!confirmed) {
+            return;
+        }
+
+    }
+
+    button.disabled = true;
+    button.innerText = "Changing...";
+
+    message.innerText = "";
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/username",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        username: username
+                    })
+                }
+            );
+
+        const data =
+            await response.json();
+
+        if (!response.ok) {
+
+            message.innerText =
+                data.detail ||
+                "Failed to change username.";
+
+            message.style.color = "#c62828";
+
+            return;
+        }
+
+        message.innerText =
+            "Username changed successfully!";
+
+        message.style.color = "#2e7d32";
+
+        setTimeout(function () {
+
+            window.location.href =
+                "/profile";
+
+        }, 700);
+
+    } catch (error) {
+
+        message.innerText =
+            "Something went wrong.";
+
+        message.style.color = "#c62828";
+
+    } finally {
+
+        button.disabled = false;
+        button.innerText =
+            "Change Username";
+
+    }
+
+});
+
+</script>
+
+{% endblock %}

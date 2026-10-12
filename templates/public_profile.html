@@ -1,0 +1,432 @@
+{% extends "base.html" %}
+
+{% block title %}WebRuse — {{ user.username }}{% endblock %}
+
+{% block content %}
+
+<section class="player-page">
+
+<!-- PLAYER HEADER -->
+
+<div class="player-header">
+
+
+<!-- FULL AVATAR -->
+<div class="player-avatar-box">
+
+    <div class="player-avatar avatar-{{ user.avatar }}">
+        <div class="avatar-eye left"></div>
+        <div class="avatar-eye right"></div>
+        <div class="avatar-smile"></div>
+    </div>
+
+</div>
+
+<div class="player-header-info">
+
+    <div class="player-name-row">
+
+        <h1>{{ user.username }}</h1>
+
+        {% if is_own_profile %}
+            <span class="player-badge">YOU</span>
+        {% endif %}
+
+    </div>
+
+    <div class="player-id">
+        Player #{{ user.id }}
+    </div>
+
+    <div class="player-status">
+        ● Online
+    </div>
+
+    <div class="player-stats">
+
+        <div>
+            <span>Friends</span>
+            <strong>0</strong>
+        </div>
+
+        <div>
+            <span>Followers</span>
+            <strong>0</strong>
+        </div>
+
+        <div>
+            <span>Following</span>
+            <strong>0</strong>
+        </div>
+
+        <div>
+            <span>Tix</span>
+            <strong>🪙 {{ user.tix }}</strong>
+        </div>
+
+        <div>
+            <span>RAP</span>
+            <strong>0</strong>
+        </div>
+
+    </div>
+
+</div>
+
+<div class="player-actions">
+
+    {% if is_own_profile %}
+
+        <a href="/profile" class="player-button">
+            My Profile
+        </a>
+
+    {% else %}
+
+        <button
+            class="player-button"
+            type="button"
+            onclick="sendFriendRequest({{ user.id }})"
+        >
+            Add Friend
+        </button>
+
+    {% endif %}
+
+</div>
+
+
+</div>
+
+<!-- TABS -->
+
+<div class="profile-tabs">
+
+
+<button class="profile-tab active">
+    About
+</button>
+
+<button class="profile-tab">
+    Creations
+</button>
+
+<button class="profile-tab">
+    Games
+</button>
+
+
+</div>
+
+<!-- ABOUT -->
+
+<section class="profile-section">
+
+
+<h2>About</h2>
+
+<div class="profile-panel about-panel">
+
+    <p class="about-text">
+        No bio yet.
+    </p>
+
+    <div class="about-footer">
+        Player since {{ user.created_at.strftime("%B %Y") }}
+    </div>
+
+</div>
+
+
+</section>
+
+<!-- CURRENTLY WEARING -->
+
+<section class="profile-section">
+
+
+<div class="section-title-row">
+
+    <h2>Currently Wearing</h2>
+
+    <a href="/inventory" class="section-link">
+        Inventory
+    </a>
+
+</div>
+
+<div class="profile-panel wearing-panel">
+
+    <!-- AVATAR -->
+    <div class="wearing-avatar">
+
+        <div class="big-avatar avatar-{{ user.avatar }}">
+
+            <div class="big-eye left"></div>
+            <div class="big-eye right"></div>
+            <div class="big-smile"></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- EQUIPPED ITEMS -->
+    <div class="wearing-items">
+
+        <div class="wearing-item">
+            🎩
+            <span>Starter Hat</span>
+        </div>
+
+        <div class="wearing-item">
+            👕
+            <span>Classic Shirt</span>
+        </div>
+
+        <div class="wearing-item">
+            👖
+            <span>Classic Pants</span>
+        </div>
+
+    </div>
+
+</div>
+
+
+</section>
+
+<!-- FACE -->
+
+<section class="profile-section">
+
+
+<div class="section-title-row">
+
+    <h2>Face</h2>
+
+</div>
+
+<div class="profile-panel face-panel">
+
+    <div class="face-item">
+
+        <div class="face-preview">
+
+            <div class="face-eyes">
+
+                <div class="face-eye"></div>
+                <div class="face-eye"></div>
+
+            </div>
+
+            <div class="face-smile"></div>
+
+        </div>
+
+        <div class="face-info">
+
+            <strong>Default Face</strong>
+
+            <span>
+                Currently equipped
+            </span>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+</section>
+
+<!-- FRIENDS -->
+
+<section class="profile-section">
+
+
+<div class="section-title-row">
+
+    <h2>Friends (0)</h2>
+
+    <button class="small-blue-button">
+        See All
+    </button>
+
+</div>
+
+<div class="profile-panel friends-panel">
+
+    <div class="empty-profile-message">
+        This player has no friends yet.
+    </div>
+
+</div>
+
+
+</section>
+
+<!-- COLLECTIONS -->
+
+<section class="profile-section">
+
+
+<div class="section-title-row">
+
+    <h2>Collections</h2>
+
+    <a href="/inventory" class="section-link">
+        Inventory
+    </a>
+
+</div>
+
+<div class="profile-panel collection-panel">
+
+    <div class="collection-item">
+        <div class="collection-icon">🎩</div>
+        <span>Starter Hat</span>
+    </div>
+
+    <div class="collection-item">
+        <div class="collection-icon">👕</div>
+        <span>Classic Shirt</span>
+    </div>
+
+    <div class="collection-item">
+        <div class="collection-icon">👖</div>
+        <span>Classic Pants</span>
+    </div>
+
+</div>
+
+
+</section>
+
+<!-- GROUPS -->
+
+<section class="profile-section">
+
+
+<div class="section-title-row">
+
+    <h2>Groups</h2>
+
+    <button class="small-blue-button">
+        See All
+    </button>
+
+</div>
+
+<div class="profile-panel empty-panel">
+
+    <div class="empty-profile-message">
+        This player is not in any groups yet.
+    </div>
+
+</div>
+
+
+</section>
+
+<!-- GAMES -->
+
+<section class="profile-section">
+
+
+<div class="section-title-row">
+
+    <h2>Games</h2>
+
+    <a href="/games" class="section-link">
+        See All
+    </a>
+
+</div>
+
+<div class="profile-panel games-panel">
+
+    <div class="game-card">
+
+        <div class="game-thumbnail">
+            🎮
+        </div>
+
+        <div class="game-info">
+
+            <strong>WebRuse Games</strong>
+
+            <span>Coming soon</span>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+</section>
+
+<!-- FAVORITES -->
+
+<section class="profile-section">
+
+
+<div class="section-title-row">
+
+    <h2>Favorites</h2>
+
+    <button class="small-blue-button">
+        Favorites
+    </button>
+
+</div>
+
+<div class="profile-panel favorites-panel">
+
+    <div class="empty-profile-message">
+        No favorite games yet.
+    </div>
+
+</div>
+
+
+</section>
+
+</section>
+
+<script>
+
+async function sendFriendRequest(userId) {
+
+    try {
+
+        const response = await fetch(
+            `/api/friends/request/${userId}`,
+            {
+                method: "POST"
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            alert(data.detail || "Could not send friend request");
+            return;
+        }
+
+        alert(data.message);
+
+    } catch (error) {
+
+        alert("Could not connect to WebRuse");
+
+    }
+
+}
+
+</script>
+
+{% endblock %}
+

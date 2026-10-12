@@ -1,0 +1,487 @@
+{% extends "base.html" %}
+
+{% block title %}WebRuse — Catalog{% endblock %}
+
+{% block content %}
+
+<section class="catalog-page">
+
+    <div class="catalog-top">
+
+        <div class="catalog-logo">
+            Catalog
+        </div>
+
+        <div class="catalog-search">
+
+            <input
+                type="text"
+                id="catalogSearch"
+                placeholder="Search"
+                oninput="filterCatalog()"
+            >
+
+            <select id="catalogSort">
+                <option value="featured">Featured</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="name">Name</option>
+            </select>
+
+            <button
+                type="button"
+                onclick="filterCatalog()"
+            >
+                🔍
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="catalog-layout">
+
+        <!-- LEFT SIDEBAR -->
+
+        <aside class="catalog-sidebar">
+
+            <h2>Category</h2>
+
+            <a href="/catalog" class="catalog-side-link">
+                View All Items
+            </a>
+
+            <div class="catalog-featured">
+
+    <strong>Featured</strong>
+
+    <a href="/catalog">All Featured Items</a>
+    <a href="/catalog?type=hat">Featured Hats</a>
+    <a href="/catalog?type=accessory">Featured Accessories</a>
+    <a href="/catalog?type=face">Featured Faces</a>
+    <a href="/catalog?type=shirt">Featured Gear</a>
+    <a href="/catalog?type=shirt">Featured Packages</a>
+    <a href="/catalog?type=accessory">Featured Emotes</a>
+
+</div>
+
+
+            <a href="/catalog?type=collectible" class="catalog-side-section">
+    <strong>Collectibles</strong>
+    <span>+</span>
+</a>
+
+<a href="/catalog?type=shirt" class="catalog-side-section">
+    <strong>Clothing</strong>
+    <span>+</span>
+</a>
+
+<a href="/catalog?type=body" class="catalog-side-section">
+    <strong>Body Parts</strong>
+    <span>+</span>
+</a>
+
+<a href="/catalog?type=gear" class="catalog-side-section">
+    <strong>Gear</strong>
+    <span>+</span>
+</a>
+
+<a href="/catalog?type=accessory" class="catalog-side-section">
+    <strong>Accessories</strong>
+    <span>+</span>
+</a>
+
+<a href="/catalog?type=animation" class="catalog-side-section">
+    <strong>Avatar Animations</strong>
+    <span>+</span>
+</a>
+
+
+            <h2 class="catalog-filter-title">
+                Filters
+            </h2>
+
+
+            <div class="catalog-filter">
+
+                <strong>Genre</strong>
+
+                <label>
+                    <input type="checkbox">
+                    Building
+                </label>
+
+                <label>
+                    <input type="checkbox">
+                    Horror
+                </label>
+
+                <label>
+                    <input type="checkbox">
+                    Town and City
+                </label>
+
+                <label>
+                    <input type="checkbox">
+                    Military
+                </label>
+
+                <label>
+                    <input type="checkbox">
+                    Adventure
+                </label>
+
+                <label>
+                    <input type="checkbox">
+                    Medieval
+                </label>
+
+            </div>
+
+
+            <div class="catalog-filter">
+
+                <strong>Creator</strong>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="creator"
+                        checked
+                    >
+                    All Creators
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="creator"
+                    >
+                    WebRuse
+                </label>
+
+            </div>
+
+
+            <div class="catalog-filter">
+
+                <strong>Currency</strong>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="currency"
+                        checked
+                    >
+                    Any
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="currency"
+                    >
+                    Tix
+                </label>
+
+            </div>
+
+
+            <div class="catalog-filter">
+
+                <strong>Price</strong>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="price"
+                        checked
+                    >
+                    Any Price
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="price"
+                    >
+                    Free
+                </label>
+
+            </div>
+
+        </aside>
+
+
+        <!-- ITEMS -->
+
+        <main class="catalog-results">
+
+            <div class="catalog-results-header">
+
+                <div>
+
+                    <div class="catalog-breadcrumb">
+                        Featured &gt; All
+                    </div>
+
+                    <div class="catalog-count">
+                        1 - {{ items|length }} of {{ items|length }} Results
+                    </div>
+
+                </div>
+
+
+                <select class="catalog-relevance">
+
+                    <option>
+                        Relevance
+                    </option>
+
+                    <option>
+                        Newest
+                    </option>
+
+                    <option>
+                        Price
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="catalog-grid" id="catalogGrid">
+
+                {% for item in items %}
+
+                <article
+                    class="catalog-card"
+                    data-name="{{ item.name|lower }}"
+                    data-price="{{ item.price }}"
+                >
+
+                    <div class="catalog-card-preview">
+
+                        {% if item.item_type == "hat" %}
+
+                            <div class="catalog-3d-hat">
+
+                                <div class="hat-top"></div>
+                                <div class="hat-brim"></div>
+
+                            </div>
+
+                        {% elif item.item_type == "face" %}
+
+                            <div class="catalog-face">
+
+                                <div class="catalog-face-eye"></div>
+                                <div class="catalog-face-eye"></div>
+
+                                <div class="catalog-face-smile"></div>
+
+                            </div>
+
+                        {% elif item.item_type == "shirt" %}
+
+                            <div class="catalog-shirt">
+                                👕
+                            </div>
+
+                        {% elif item.item_type == "pants" %}
+
+                            <div class="catalog-pants">
+                                👖
+                            </div>
+
+                        {% else %}
+
+                            <div class="catalog-generic">
+                                {{ item.icon }}
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="catalog-card-name">
+
+                        <a href="#">
+                            {{ item.name }}
+                        </a>
+
+                    </div>
+
+
+                    <div class="catalog-card-type">
+
+                        {{ item.item_type }}
+
+                    </div>
+
+
+                    <div class="catalog-card-price">
+
+    {% if item.currency == "webbux" %}
+        <strong>
+            <img
+                src="/static/webbux_28.png"
+                alt="WebBux"
+            >
+            {{ item.price }}
+        </strong>
+        <span>WebBux</span>
+    {% else %}
+        <strong>
+            <img
+                src="/static/tix_28.png"
+                alt="Tix"
+            >
+            {{ item.price }}
+        </strong>
+        <span>Tix</span>
+    {% endif %}
+
+</div>
+
+                    <div class="catalog-card-action">
+
+                        {% if item.owned %}
+
+                            <button
+                                class="catalog-get owned"
+                                disabled
+                            >
+                                Owned
+                            </button>
+
+                        {% else %}
+
+                            <button
+                                class="catalog-get"
+                                onclick="buyItem({{ item.id }})"
+                            >
+                                Get
+                            </button>
+
+                        {% endif %}
+
+                    </div>
+
+                </article>
+
+                {% else %}
+
+                <div class="catalog-empty">
+
+                    <h2>
+                        No items found
+                    </h2>
+
+                    <p>
+                        The catalog is currently empty.
+                    </p>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <div class="catalog-pagination">
+
+                <button disabled>
+                    ‹
+                </button>
+
+                <span>
+                    1
+                </span>
+
+                <button disabled>
+                    ›
+                </button>
+
+            </div>
+
+        </main>
+
+    </div>
+
+</section>
+
+
+<script>
+
+function filterCatalog() {
+
+    const search =
+        document
+            .getElementById("catalogSearch")
+            .value
+            .toLowerCase();
+
+    const cards =
+        document.querySelectorAll(".catalog-card");
+
+    cards.forEach(card => {
+
+        const name =
+            card.dataset.name;
+
+        if (name.includes(search)) {
+            card.style.display = "";
+        } else {
+            card.style.display = "none";
+        }
+
+    });
+
+}
+
+
+async function buyItem(itemId) {
+
+    try {
+
+        const response = await fetch(
+            `/api/catalog/buy/${itemId}`,
+            {
+                method: "POST"
+            }
+        );
+
+        const data =
+            await response.json();
+
+        if (!response.ok) {
+
+            alert(
+                data.detail ||
+                "Unable to get item"
+            );
+
+            return;
+        }
+
+        alert(data.message);
+
+        location.reload();
+
+    } catch (error) {
+
+        alert(
+            "Connection error"
+        );
+
+    }
+
+}
+
+</script>
+
+{% endblock %}

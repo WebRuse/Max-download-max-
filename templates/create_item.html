@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+
+{% block title %}WebRuse — Create Item{% endblock %}
+
+{% block content %}
+
+<section class="creator-page">
+
+    <div class="creator-tabs">
+
+        <a href="/create" class="creator-tab">
+            My Creations
+        </a>
+
+        <a href="#" class="creator-tab">
+            Group Creations
+        </a>
+
+        <a href="#" class="creator-tab">
+            Library
+        </a>
+
+        <a href="#" class="creator-tab">
+            Stats
+        </a>
+
+    </div>
+
+    <div class="creator-layout">
+
+        <aside class="creator-sidebar">
+
+            <h2>Create</h2>
+
+            <a
+                href="/create/item"
+                class="creator-side-link active"
+            >
+                New Item
+            </a>
+
+            <a
+                href="/create"
+                class="creator-side-link"
+            >
+                My Creations
+            </a>
+
+        </aside>
+
+        <main class="creator-content">
+
+            <div class="creator-header">
+
+                <div>
+                    <h1>Create New Item</h1>
+
+                    <p>
+                        Choose what you want to create.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="creator-type-grid">
+
+                <a
+                    href="/create/item/shirt"
+                    class="creator-type-card"
+                >
+
+                    <div class="creator-type-preview shirt-preview">
+                        <div class="preview-shirt"></div>
+                    </div>
+
+                    <strong>Shirt</strong>
+
+                    <span>
+                        Create clothing for the avatar torso.
+                    </span>
+
+                </a>
+
+                <a
+                    href="/create/item/pants"
+                    class="creator-type-card"
+                >
+
+                    <div class="creator-type-preview pants-preview">
+                        <div class="preview-pants"></div>
+                    </div>
+
+                    <strong>Pants</strong>
+
+                    <span>
+                        Create clothing for the avatar legs.
+                    </span>
+
+                </a>
+
+            </div>
+
+        </main>
+
+    </div>
+
+</section>
+
+<style>
+
+.creator-type-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(180px, 1fr));
+    gap: 18px;
+
+    border-top: 1px solid #ddd;
+    padding-top: 25px;
+}
+
+.creator-type-card {
+    display: block;
+
+    padding: 15px;
+
+    border: 1px solid #c8c8c8;
+    background: #f8f8f8;
+
+    color: #222;
+    text-decoration: none;
+
+    box-sizing: border-box;
+}
+
+.creator-type-card:hover {
+    border-color: #1675d1;
+    background: #ffffff;
+}
+
+.creator-type-preview {
+    height: 150px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 12px;
+
+    background: #eeeeee;
+    border: 1px solid #d0d0d0;
+}
+
+.creator-type-card strong {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #1675d1;
+    font-size: 17px;
+}
+
+.creator-type-card span {
+    display: block;
+
+    color: #666;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+/* Temporary clothing previews */
+
+.preview-shirt {
+    width: 70px;
+    height: 85px;
+
+    background: #4a74a8;
+
+    border: 1px solid #304f76;
+
+    position: relative;
+}
+
+.preview-shirt::before,
+.preview-shirt::after {
+    content: "";
+
+    position: absolute;
+
+    top: 8px;
+
+    width: 25px;
+    height: 65px;
+
+    background: #4a74a8;
+
+    border: 1px solid #304f76;
+}
+
+.preview-shirt::before {
+    left: -26px;
+}
+
+.preview-shirt::after {
+    right: -26px;
+}
+
+.preview-pants {
+    width: 70px;
+    height: 90px;
+
+    background: #303947;
+
+    border: 1px solid #202631;
+
+    position: relative;
+}
+
+.preview-pants::after {
+    content: "";
+
+    position: absolute;
+
+    left: 34px;
+    top: 0;
+
+    width: 2px;
+    height: 90px;
+
+    background: #202631;
+}
+
+@media (max-width: 600px) {
+
+    .creator-type-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+</style>
+
+{% endblock %}

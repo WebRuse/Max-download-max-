@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}WebRuse — Register{% endblock %}
+
+{% block content %}
+
+<section class="form-card">
+
+    <h1>Create an Account</h1>
+
+    <p>
+        Join WebRuse and create your own player.
+    </p>
+
+<label for="birthDate">Date of Birth</label>
+
+<input
+    id="birthDate"
+    type="date"
+    required
+>
+
+    <form id="register-form">
+
+        <input
+            id="username"
+            type="text"
+            placeholder="Username"
+            minlength="3"
+            maxlength="21"
+            required
+        >
+
+        <input
+            id="email"
+            type="email"
+            placeholder="Email"
+            required
+        >
+
+        <input
+            id="password"
+            type="password"
+            placeholder="Password"
+            minlength="8"
+            required
+        >
+
+        <button
+            type="submit"
+            class="button button-primary"
+        >
+            Create Account
+        </button>
+
+    </form>
+
+    <div id="message" class="message"></div>
+
+    <p class="form-footer">
+        Already have an account?
+        <a href="/login">Login</a>
+    </p>
+
+</section>
+
+<script>
+
+const form = document.getElementById("register-form");
+const message = document.getElementById("message");
+
+form.addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+    const username =
+        document.getElementById("username").value.trim();
+
+    const email =
+        document.getElementById("email").value.trim();
+
+    const password =
+        document.getElementById("password").value;
+
+    message.style.display = "block";
+    message.innerText = "Creating account...";
+
+    try {
+
+        const response = await fetch(
+            "/api/register",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    birth_date: document.getElementById("birthDate").value,
+                    username: username,
+                    email: email,
+                    password: password
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+
+            let error = data.detail;
+
+            if (Array.isArray(error)) {
+                error = error
+                    .map(item => item.msg)
+                    .join(", ");
+            }
+
+            message.innerText =
+                error || "Registration failed.";
+
+            return;
+        }
+
+        message.innerText =
+            "Account created! Redirecting...";
+
+        setTimeout(function() {
+            window.location.href = "/login";
+        }, 1000);
+
+    } catch (error) {
+
+        message.innerText =
+            "Could not connect to WebRuse.";
+    }
+
+});
+
+</script>
+
+{% endblock %}

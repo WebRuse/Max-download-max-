@@ -1,0 +1,400 @@
+{% extends "base.html" %}
+
+{% block title %}WebRuse — Create Pants{% endblock %}
+
+{% block content %}
+
+<section class="creator-page">
+
+    <div class="creator-tabs">
+        <a href="/create" class="creator-tab active">My Creations</a>
+        <a href="#" class="creator-tab">Group Creations</a>
+        <a href="#" class="creator-tab">Library</a>
+        <a href="#" class="creator-tab">Stats</a>
+    </div>
+
+    <div class="creator-layout">
+
+        <aside class="creator-sidebar">
+
+            <h2>Creations</h2>
+
+            <a href="/create" class="creator-side-link">
+                Items
+            </a>
+
+            <a href="/create/shirts" class="creator-side-link">
+                Shirts
+            </a>
+
+            <a href="/create/pants" class="creator-side-link active">
+                Pants
+            </a>
+
+        </aside>
+
+        <main class="creator-content">
+
+            <div class="creator-header">
+
+                <div>
+                    <h1>Create Pants</h1>
+
+                    <p>
+                        Create pants for your WebRuse avatar.
+                    </p>
+                </div>
+
+            </div>
+
+            <div
+                style="
+                    max-width: 520px;
+                    margin: 0 auto;
+                    padding: 20px;
+                    border: 1px solid #d0d0d0;
+                    background: #f7f7f7;
+                    box-sizing: border-box;
+                "
+            >
+
+                <div style="margin-bottom: 16px;">
+
+                    <label
+                        for="pantsName"
+                        style="
+                            display: block;
+                            margin-bottom: 6px;
+                            font-size: 13px;
+                            font-weight: bold;
+                            color: #333;
+                        "
+                    >
+                        Item Name
+                    </label>
+
+                    <input
+                        id="pantsName"
+                        type="text"
+                        maxlength="50"
+                        placeholder="My Pants"
+                        style="
+                            width: 100%;
+                            box-sizing: border-box;
+                            padding: 8px;
+                            border: 1px solid #aaa;
+                            background: #fff;
+                            font-size: 14px;
+                        "
+                    >
+
+                </div>
+
+
+                <div style="margin-bottom: 16px;">
+
+                    <label
+                        for="pantsPrice"
+                        style="
+                            display: block;
+                            margin-bottom: 6px;
+                            font-size: 13px;
+                            font-weight: bold;
+                            color: #333;
+                        "
+                    >
+                        Price
+                    </label>
+
+                    <div
+                        style="
+                            display: flex;
+                            gap: 8px;
+                        "
+                    >
+
+                        <input
+                            id="pantsPrice"
+                            type="number"
+                            min="0"
+                            value="0"
+                            style="
+                                flex: 1;
+                                box-sizing: border-box;
+                                padding: 8px;
+                                border: 1px solid #aaa;
+                                background: #fff;
+                                font-size: 14px;
+                            "
+                        >
+
+                        <select
+                            id="pantsCurrency"
+                            style="
+                                width: 110px;
+                                padding: 8px;
+                                border: 1px solid #aaa;
+                                background: #fff;
+                                font-size: 14px;
+                            "
+                        >
+                            <option value="tix">Tix</option>
+                            <option value="webbux">WebBux</option>
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <div style="margin-bottom: 16px;">
+
+                    <label
+                        for="pantsTemplate"
+                        style="
+                            display: block;
+                            margin-bottom: 6px;
+                            font-size: 13px;
+                            font-weight: bold;
+                            color: #333;
+                        "
+                    >
+                        Pants Template
+                    </label>
+
+                    <input
+                        id="pantsTemplate"
+                        type="file"
+                        accept="image/png,image/jpeg"
+                        style="
+                            width: 100%;
+                            box-sizing: border-box;
+                            padding: 7px;
+                            border: 1px solid #aaa;
+                            background: #fff;
+                            font-size: 12px;
+                        "
+                    >
+
+                    <p
+                        style="
+                            margin: 7px 0 10px;
+                            color: #777;
+                            font-size: 11px;
+                            line-height: 1.4;
+                        "
+                    >
+                        Upload a PNG or JPG clothing template for your
+                        WebRuse avatar.
+                    </p>
+
+                    <div
+                        id="pants-upload-preview"
+                        style="
+                            width: 100%;
+                            min-height: 130px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            box-sizing: border-box;
+                            border: 1px dashed #aaa;
+                            background: #fff;
+                            color: #888;
+                            font-size: 12px;
+                            overflow: hidden;
+                        "
+                    >
+                        No template selected
+                    </div>
+
+                </div>
+
+
+                <div
+                    style="
+                        text-align: right;
+                        padding-top: 8px;
+                        border-top: 1px solid #ddd;
+                    "
+                >
+
+                    <button
+                        type="button"
+                        class="creator-create-button"
+                        id="savePants"
+                    >
+                        Save Pants
+                    </button>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+</section>
+
+
+<script>
+
+const pantsTemplate =
+    document.getElementById("pantsTemplate");
+
+const uploadPreview =
+    document.getElementById("pants-upload-preview");
+
+const savePants =
+    document.getElementById("savePants");
+
+
+pantsTemplate.addEventListener("change", function () {
+
+    const file = pantsTemplate.files[0];
+
+    if (!file) {
+
+        uploadPreview.innerText =
+            "No template selected";
+
+        return;
+    }
+
+    const image =
+        document.createElement("img");
+
+    image.src =
+        URL.createObjectURL(file);
+
+    image.alt =
+        "Pants template preview";
+
+    image.style.maxWidth = "100%";
+    image.style.maxHeight = "180px";
+    image.style.objectFit = "contain";
+
+    uploadPreview.innerHTML = "";
+
+    uploadPreview.appendChild(image);
+
+});
+
+
+savePants.addEventListener("click", async function () {
+
+    const name =
+        document.getElementById("pantsName").value.trim();
+
+    const price =
+        document.getElementById("pantsPrice").value;
+
+    const currency =
+        document.getElementById("pantsCurrency").value;
+
+    const file =
+        pantsTemplate.files[0];
+
+
+    if (!name) {
+
+        alert("Please enter an item name.");
+
+        return;
+    }
+
+
+    if (!file) {
+
+        alert("Please upload a pants template.");
+
+        return;
+    }
+
+
+    const formData =
+        new FormData();
+
+    formData.append(
+        "name",
+        name
+    );
+
+    formData.append(
+        "price",
+        price
+    );
+
+    formData.append(
+        "currency",
+        currency
+    );
+
+    formData.append(
+        "template",
+        file
+    );
+
+
+    savePants.disabled = true;
+
+    savePants.innerText =
+        "Saving...";
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/create/pants",
+                {
+                    method: "POST",
+                    body: formData
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            alert(
+                data.detail ||
+                "Failed to create pants."
+            );
+
+            return;
+        }
+
+
+        alert(
+            "Pants created successfully!"
+        );
+
+
+        window.location.href =
+            "/create/pants";
+
+
+    } catch (error) {
+
+        alert(
+            "Something went wrong."
+        );
+
+    } finally {
+
+        savePants.disabled = false;
+
+        savePants.innerText =
+            "Save Pants";
+
+    }
+
+});
+
+</script>
+
+{% endblock %}

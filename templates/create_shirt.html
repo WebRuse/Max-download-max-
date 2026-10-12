@@ -1,0 +1,596 @@
+{% extends "base.html" %}
+
+{% block title %}WebRuse — Create Shirt{% endblock %}
+
+{% block content %}
+
+<section class="creator-page">
+
+    <div class="creator-tabs">
+
+        <a href="/create" class="creator-tab active">
+            My Creations
+        </a>
+
+        <a href="#" class="creator-tab">
+            Group Creations
+        </a>
+
+        <a href="#" class="creator-tab">
+            Library
+        </a>
+
+        <a href="#" class="creator-tab">
+            Stats
+        </a>
+
+    </div>
+
+    <div class="creator-layout">
+
+        <aside class="creator-sidebar">
+
+            <h2>Create</h2>
+
+            <a
+                href="/create/item/shirt"
+                class="creator-side-link active"
+            >
+                Shirt
+            </a>
+
+            <a
+                href="/create/item/pants"
+                class="creator-side-link"
+            >
+                Pants
+            </a>
+
+            <a
+                href="/create"
+                class="creator-side-link"
+            >
+                My Creations
+            </a>
+
+        </aside>
+
+        <main class="creator-content">
+
+            <div class="creator-header">
+
+                <div>
+                    <h1>Create Shirt</h1>
+
+                    <p>
+                        Design a shirt for your WebRuse avatar.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="shirt-editor">
+
+                <div class="shirt-preview-area">
+
+                    <div class="shirt-preview-title">
+                        Avatar Preview
+                    </div>
+
+                    <div class="shirt-avatar">
+
+                        <div class="shirt-head">
+                            :)
+                        </div>
+
+                        <div class="shirt-body">
+
+                            <div class="shirt-arm"></div>
+
+                            <div
+                                id="shirtBody"
+                                class="shirt-torso"
+                            ></div>
+
+                            <div class="shirt-arm"></div>
+
+                        </div>
+
+                        <div class="shirt-legs">
+
+                            <div></div>
+                            <div></div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="shirt-settings">
+
+                    <h2>Shirt Design</h2>
+
+                    <label for="shirtTemplate">
+    Shirt Template
+</label>
+
+<input
+    id="shirtTemplate"
+    type="file"
+    accept="image/png,image/jpeg"
+>
+
+<p class="shirt-upload-note">
+    Upload a PNG or JPG clothing template for your WebRuse avatar.
+</p>
+
+<div
+    id="shirt-upload-preview"
+    class="shirt-upload-preview"
+>
+    No template selected
+</div>
+
+                    <label for="shirtName">
+                        Item Name
+                    </label>
+
+                    <input
+                        id="shirtName"
+                        type="text"
+                        maxlength="50"
+                        placeholder="My Shirt"
+                    >
+
+                    <label for="shirtPrice">
+                        Price
+                    </label>
+
+                    <div class="shirt-price">
+
+                        <input
+                            id="shirtPrice"
+                            type="number"
+                            min="0"
+                            value="0"
+                        >
+
+                        <select id="shirtCurrency">
+
+                            <option value="tix">
+                                Tix
+                            </option>
+
+                            <option value="webbux">
+                                WebBux
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        class="creator-create-button"
+                        id="saveShirt"
+                    >
+                        Save Shirt
+                    </button>
+
+                    <p class="shirt-note">
+                        WebRuse clothing is created using the
+                        built-in avatar editor. Roblox clothing
+                        PNG templates cannot be uploaded.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+</section>
+
+<style>
+
+.shirt-editor {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 20px;
+
+    border-top: 1px solid #ddd;
+    padding-top: 20px;
+}
+
+.shirt-preview-area {
+    min-height: 430px;
+
+    border: 1px solid #c8c8c8;
+    background: #eeeeee;
+
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.shirt-preview-title {
+    position: absolute;
+    top: 10px;
+    left: 12px;
+
+    font-size: 13px;
+    font-weight: bold;
+    color: #444;
+}
+
+.shirt-avatar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.shirt-head {
+    width: 82px;
+    height: 82px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #aaaaaa;
+
+    border: 1px solid #888;
+
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.shirt-body {
+    display: flex;
+    align-items: flex-start;
+}
+
+.shirt-arm {
+    width: 30px;
+    height: 105px;
+
+    background: #aaaaaa;
+
+    border: 1px solid #888;
+}
+
+.shirt-torso {
+    width: 92px;
+    height: 110px;
+
+    background: #4a74a8;
+
+    border-top: 1px solid #304f76;
+    border-bottom: 1px solid #304f76;
+}
+
+.shirt-legs {
+    display: flex;
+    gap: 4px;
+}
+
+.shirt-legs div {
+    width: 42px;
+    height: 105px;
+
+    background: #303947;
+
+    border: 1px solid #202631;
+}
+
+.shirt-settings {
+    border: 1px solid #c8c8c8;
+    background: #f8f8f8;
+
+    padding: 15px;
+}
+
+.shirt-settings h2 {
+    margin: 0 0 18px;
+
+    font-size: 18px;
+}
+
+.shirt-settings label {
+    display: block;
+
+    margin: 14px 0 6px;
+
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.shirt-colors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+
+.shirt-color {
+    width: 30px;
+    height: 30px;
+
+    padding: 0;
+
+    border: 2px solid #999;
+
+    cursor: pointer;
+}
+
+.shirt-color:hover {
+    border-color: #1675d1;
+}
+
+#shirtName {
+    width: 100%;
+    height: 32px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #aaa;
+
+    padding: 5px 7px;
+}
+
+.shirt-price {
+    display: flex;
+    gap: 6px;
+}
+
+#shirtPrice {
+    width: 100px;
+    height: 32px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #aaa;
+
+    padding: 5px 7px;
+}
+
+#shirtCurrency {
+    height: 32px;
+
+    border: 1px solid #aaa;
+
+    background: white;
+}
+
+.shirt-settings .creator-create-button {
+    margin-top: 20px;
+
+    width: 100%;
+}
+
+.shirt-note {
+    margin: 15px 0 0;
+
+    font-size: 11px;
+    line-height: 1.5;
+    color: #777;
+}
+
+.shirt-upload-note {
+    margin: 7px 0 10px;
+
+    color: #777;
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+.shirt-upload-preview {
+    width: 100%;
+    min-height: 130px;
+
+    margin-top: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    box-sizing: border-box;
+
+    border: 1px dashed #aaa;
+    background: #ffffff;
+
+    color: #888;
+    font-size: 12px;
+
+    overflow: hidden;
+}
+
+.shirt-upload-preview img {
+    max-width: 100%;
+    max-height: 180px;
+
+    object-fit: contain;
+}
+
+@media (max-width: 700px) {
+
+    .shirt-editor {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+</style>
+
+<script>
+const shirtTemplate =
+    document.getElementById("shirtTemplate");
+
+const uploadPreview =
+    document.getElementById(
+        "shirt-upload-preview"
+    );
+
+const saveShirt =
+    document.getElementById("saveShirt");
+
+
+shirtTemplate.addEventListener(
+    "change",
+    function () {
+
+        const file =
+            shirtTemplate.files[0];
+
+        if (!file) {
+            uploadPreview.innerText =
+                "No template selected";
+
+            return;
+        }
+
+        const image =
+            document.createElement("img");
+
+        image.src =
+            URL.createObjectURL(file);
+
+        image.alt =
+            "Shirt template preview";
+
+        uploadPreview.innerHTML = "";
+
+        uploadPreview.appendChild(
+            image
+        );
+    }
+);
+
+
+saveShirt.addEventListener(
+    "click",
+    async function () {
+
+        const name =
+            document.getElementById(
+                "shirtName"
+            ).value.trim();
+
+        const price =
+            document.getElementById(
+                "shirtPrice"
+            ).value;
+
+        const currency =
+            document.getElementById(
+                "shirtCurrency"
+            ).value;
+
+        const file =
+            shirtTemplate.files[0];
+
+
+        if (!name) {
+            alert(
+                "Please enter an item name."
+            );
+            return;
+        }
+
+
+        if (!file) {
+            alert(
+                "Please upload a shirt template."
+            );
+            return;
+        }
+
+
+        const formData =
+            new FormData();
+
+        formData.append(
+            "name",
+            name
+        );
+
+        formData.append(
+            "price",
+            price
+        );
+
+        formData.append(
+            "currency",
+            currency
+        );
+
+        formData.append(
+            "template",
+            file
+        );
+
+
+        saveShirt.disabled = true;
+
+        saveShirt.innerText =
+            "Saving...";
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/create/shirt",
+                    {
+                        method: "POST",
+                        body: formData
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                alert(
+                    data.detail ||
+                    "Failed to create shirt."
+                );
+
+                return;
+            }
+
+
+            alert(
+                "Shirt created successfully!"
+            );
+
+
+            window.location.href =
+                "/create";
+
+        } catch (error) {
+
+            alert(
+                "Something went wrong."
+            );
+
+        } finally {
+
+            saveShirt.disabled = false;
+
+            saveShirt.innerText =
+                "Save Shirt";
+        }
+    }
+);
+</script>
+
+{% endblock %}

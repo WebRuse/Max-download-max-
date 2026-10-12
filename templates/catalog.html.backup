@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block title %}WebRuse — Каталог{% endblock %}
+
+{% block content %}
+
+<section class="catalog-page">
+
+    <div class="catalog-header">
+
+        <div>
+            <h1>Каталог</h1>
+            <p>Предметы для твоего аватара</p>
+        </div>
+
+        <div class="catalog-balance">
+            🪙 {{ user.tix }} Tix
+        </div>
+
+    </div>
+
+
+    <div class="catalog-tabs">
+
+        <a href="/catalog" class="catalog-tab active">
+            Все
+        </a>
+
+        <a href="/catalog?type=hat" class="catalog-tab">
+            Шляпы
+        </a>
+
+        <a href="/catalog?type=shirt" class="catalog-tab">
+            Одежда
+        </a>
+
+        <a href="/catalog?type=face" class="catalog-tab">
+            Лица
+        </a>
+
+        <a href="/catalog?type=accessory" class="catalog-tab">
+            Аксессуары
+        </a>
+
+    </div>
+
+
+    <div class="catalog-grid">
+
+        {% for item in items %}
+
+        <div class="catalog-card">
+
+            <div class="catalog-preview">
+
+                <div class="catalog-item-icon">
+                    {{ item.icon }}
+                </div>
+
+            </div>
+
+
+            <div class="catalog-card-info">
+
+                <h3>
+                    {{ item.name }}
+                </h3>
+
+                <span class="catalog-item-type">
+                    {{ item.item_type }}
+                </span>
+
+                <div class="catalog-card-bottom">
+
+                    <strong>
+                        🪙 {{ item.price }} Tix
+                    </strong>
+
+                    {% if item.owned %}
+
+                        <button
+                            class="catalog-button owned"
+                            disabled
+                        >
+                            Уже есть
+                        </button>
+
+                    {% else %}
+
+                        <button
+                            class="catalog-button"
+                            onclick="buyItem({{ item.id }})"
+                        >
+                            Получить
+                        </button>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% else %}
+
+        <div class="catalog-empty">
+
+            <h2>Каталог пуст</h2>
+
+            <p>
+                Здесь пока нет предметов.
+            </p>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+
+<script>
+
+async function buyItem(itemId) {
+
+    try {
+
+        const response = await fetch(
+            `/api/catalog/buy/${itemId}`,
+            {
+                method: "POST"
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            alert(data.detail || "Не удалось получить предмет");
+            return;
+        }
+
+        alert(data.message);
+
+        location.reload();
+
+    } catch (error) {
+
+        alert("Ошибка соединения с сервером");
+
+    }
+
+}
+
+</script>
+
+{% endblock %}

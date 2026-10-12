@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+
+{% block title %}WebRuse — Профиль{% endblock %}
+
+{% block content %}
+
+<section class="profile">
+
+    <h1>{{ user.username }}</h1>
+    <p>Профиль игрока WebRuse</p>
+
+    <div class="avatar-preview avatar-{{ user.avatar }}" id="avatar-preview">
+        <div class="avatar-character">
+            <div class="avatar-head"></div>
+
+            <div class="avatar-arms">
+                <div class="avatar-arm avatar-arm-left"></div>
+                <div class="avatar-torso"></div>
+                <div class="avatar-arm avatar-arm-right"></div>
+            </div>
+
+            <div class="avatar-legs">
+                <div class="avatar-leg avatar-leg-left"></div>
+                <div class="avatar-leg avatar-leg-right"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tix">
+        🪙 {{ user.tix }} Tix
+    </div>
+
+    <div class="stat">
+        <strong>Username:</strong> {{ user.username }}
+    </div>
+
+    <div class="stat">
+        <strong>Email:</strong> {{ user.email }}
+    </div>
+
+    <div class="stat">
+        <strong>Account ID:</strong> {{ user.id }}
+    </div>
+
+    <div class="stat">
+        <strong>Статус:</strong> Online
+    </div>
+
+    <h2 class="avatar-title">Выбрать цвет аватара</h2>
+
+    <div class="avatar-options">
+
+        {% for avatar in avatars %}
+
+        <button
+            type="button"
+            class="avatar-option {% if user.avatar == avatar %}selected{% endif %}"
+            data-avatar="{{ avatar }}"
+            onclick="selectAvatar('{{ avatar }}')"
+        >
+
+            <div class="mini-avatar avatar-{{ avatar }}">
+
+                <div class="mini-head"></div>
+
+                <div class="mini-body-row">
+                    <div class="mini-arm"></div>
+                    <div class="mini-body"></div>
+                    <div class="mini-arm"></div>
+                </div>
+
+                <div class="mini-legs">
+                    <div class="mini-leg"></div>
+                    <div class="mini-leg"></div>
+                </div>
+
+            </div>
+
+            <span>{{ avatar|capitalize }}</span>
+
+        </button>
+
+        {% endfor %}
+
+    </div>
+
+    <div id="avatar-message" class="message"></div>
+
+    <br>
+
+    <button onclick="logout()" class="button button-secondary">
+        Выйти
+    </button>
+
+</section>
+
+
+<script>
+
+const currentAvatar = "{{ user.avatar }}";
+
+
+function updatePreview(avatar) {
+
+    const preview =
+        document.getElementById("avatar-preview");
+
+    preview.className =
+        "avatar-preview avatar-" + avatar;
+
+}
+
+
+async function selectAvatar(avatar) {
+
+    const message =
+        document.getElementById("avatar-message");
+
+    message.style.display = "block";
+    message.innerText = "Сохраняем аватар...";
+
+
+    try {
+
+        const response = await fetch(
+            "/api/avatar",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    avatar: avatar
+                })
+            }
+        );
+
+
+        const data = await response.json();
+
+
+        if (!response.ok) {
+
+            message.innerText =
+                data.detail ||
+                "Не удалось изменить аватар.";
+
+            return;
+        }
+
+
+        document
+            .querySelectorAll(".avatar-option")
+            .forEach(function(button) {
+
+                button.classList.remove("selected");
+
+            });
+
+
+        const selectedButton =
+            document.querySelector(
+                '[data-avatar="' + avatar + '"]'
+            );
+
+
+        if (selectedButton) {
+            selectedButton.classList.add("selected");
+        }
+
+
+        updatePreview(avatar);
+
+        message.innerText =
+            "Аватар сохранён!";
+
+
+    } catch (error) {
+
+        message.innerText =
+            "Не удалось подключиться к WebRuse.";
+
+    }
+
+}
+
+
+async function logout() {
+
+    const response =
+        await fetch(
+            "/api/logout",
+            {
+                method: "POST"
+            }
+        );
+
+
+    if (response.ok) {
+        window.location.href = "/";
+    }
+
+}
+
+
+updatePreview(currentAvatar);
+
+</script>
+
+{% endblock %}

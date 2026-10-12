@@ -1,0 +1,329 @@
+{% extends "base.html" %}
+
+{% block title %}WebRuse — Inventory{% endblock %}
+
+{% block content %}
+
+<section class="inventory-page">
+
+
+<div class="inventory-header">
+
+    <div>
+        <h1>Inventory</h1>
+
+        <p>
+            Your WebRuse items
+        </p>
+    </div>
+
+    <div class="inventory-balance">
+        🪙 {{ user.tix }} Tix
+    </div>
+
+</div>
+
+
+<div class="inventory-tabs">
+
+    <button class="inventory-tab active">
+        All
+    </button>
+
+    <button class="inventory-tab">
+        Hats
+    </button>
+
+    <button class="inventory-tab">
+        Clothing
+    </button>
+
+    <button class="inventory-tab">
+        Faces
+    </button>
+
+    <button class="inventory-tab">
+        Accessories
+    </button>
+
+</div>
+
+
+<div class="inventory-grid">
+
+    {% if items %}
+
+        {% for item in items %}
+
+            <div class="inventory-card">
+
+                <div
+                    class="inventory-preview item-3d-preview"
+                    data-item-type="{{ item.item_type }}"
+                    data-item-id="{{ item.id }}"
+                ></div>
+
+                <div class="inventory-info">
+
+                    <strong>
+                        {{ item.name }}
+                    </strong>
+
+                    <span>
+                        {{ item.item_type }}
+                    </span>
+
+                    {% if item.description %}
+
+                        <small>
+                            {{ item.description }}
+                        </small>
+
+                    {% endif %}
+
+                </div>
+
+             {% if item.name not in [
+"Starter Hat",
+"Classic Shirt",
+"Classic Pants"
+
+
+] %}
+<button
+class="inventory-equip"
+type="button"
+onclick="toggleEquip({{ item.id }}, this)"
+
+>
+
+
+{% if item.equipped %}
+
+
+
+    Unequip
+{% else %}
+    Equip
+{% endif %}
+
+
+</button>
+
+{% endif %}
+
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="inventory-card empty">
+
+            <div class="inventory-preview">
+                📦
+            </div>
+
+            <div class="inventory-info">
+
+                <strong>
+                    Inventory is empty
+                </strong>
+
+                <span>
+                    Visit the catalog to get items.
+                </span>
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.min.js"></script>
+
+<script>
+
+document.querySelectorAll(".item-3d-preview").forEach((container) => {
+
+    const scene = new THREE.Scene();
+
+    const camera = new THREE.PerspectiveCamera(
+        35,
+        container.clientWidth / container.clientHeight,
+        0.1,
+        100
+    );
+
+    camera.position.set(0, 1.5, 5);
+
+
+    const renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: true
+    });
+
+    renderer.setPixelRatio(
+        Math.min(window.devicePixelRatio, 2)
+    );
+
+    renderer.setSize(
+        container.clientWidth,
+        container.clientHeight
+    );
+
+    renderer.shadowMap.enabled = true;
+
+    container.appendChild(renderer.domElement);
+
+
+    const ambientLight = new THREE.AmbientLight(
+        0xffffff,
+        2
+    );
+
+    scene.add(ambientLight);
+
+
+    const mainLight = new THREE.DirectionalLight(
+        0xffffff,
+        3
+    );
+
+    mainLight.position.set(3, 5, 4);
+
+    mainLight.castShadow = true;
+
+    scene.add(mainLight);
+
+
+    const type = container.dataset.itemType;
+
+    let object;
+
+
+    if (type === "hat") {
+
+        const material = new THREE.MeshStandardMaterial({
+            color: 0x222222,
+            roughness: 0.75
+        });
+
+
+        const brim = new THREE.Mesh(
+            new THREE.CylinderGeometry(
+                1.15,
+                1.15,
+                0.18,
+                32
+            ),
+            material
+        );
+
+        brim.position.y = 0.15;
+
+
+        const top = new THREE.Mesh(
+            new THREE.CylinderGeometry(
+                0.72,
+                0.72,
+                1.15,
+                32
+            ),
+            material
+        );
+
+        top.position.y = 0.75;
+
+
+        object = new THREE.Group();
+
+        object.add(brim);
+        object.add(top);
+
+    } else {
+
+        const material = new THREE.MeshStandardMaterial({
+            color: 0x4b82c3,
+            roughness: 0.8
+        });
+
+
+        object = new THREE.Mesh(
+            new THREE.BoxGeometry(
+                1.5,
+                1.5,
+                0.8
+            ),
+            material
+        );
+
+    }
+
+
+    scene.add(object);
+
+
+    object.rotation.y = 0.35;
+
+
+    function animate() {
+
+        requestAnimationFrame(animate);
+
+        renderer.render(
+            scene,
+            camera
+        );
+
+    }
+
+
+    animate();
+
+});
+
+</script>
+
+<script>
+
+async function toggleEquip(itemId, button) {
+
+    try {
+
+        const response = await fetch(
+            `/api/inventory/equip/${itemId}`,
+            {
+                method: "POST"
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            alert(data.detail || "Could not change equipment");
+            return;
+        }
+
+        button.textContent = data.equipped
+            ? "Unequip"
+            : "Equip";
+
+    } catch (error) {
+
+        alert("Could not connect to WebRuse");
+
+    }
+
+}
+
+</script>
+
+{% endblock %}
+

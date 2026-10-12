@@ -1,0 +1,271 @@
+{% extends "base.html" %}
+
+{% block title %}WebRuse — Shirts{% endblock %}
+
+{% block content %}
+
+<section class="creator-page">
+
+    <div class="creator-tabs">
+
+        <a href="/create" class="creator-tab active">
+            My Creations
+        </a>
+
+        <a href="#" class="creator-tab">
+            Group Creations
+        </a>
+
+        <a href="#" class="creator-tab">
+            Library
+        </a>
+
+        <a href="#" class="creator-tab">
+            Stats
+        </a>
+
+    </div>
+
+
+    <div class="creator-layout">
+
+        <aside class="creator-sidebar">
+
+            <h2>Creations</h2>
+
+            <a
+                href="/create"
+                class="creator-side-link"
+            >
+                Items
+            </a>
+
+            <a
+                href="/create/shirts"
+                class="creator-side-link active"
+            >
+                Shirts
+            </a>
+
+            <a
+                href="/create/pants"
+                class="creator-side-link"
+            >
+                Pants
+            </a>
+
+        </aside>
+
+
+        <main class="creator-content">
+
+            <div class="creator-header">
+
+                <div>
+
+                    <h1>My Shirts</h1>
+
+                    <p>
+                        Create and manage your shirts.
+                    </p>
+
+                </div>
+
+                <a
+                    href="/create/item/shirt"
+                    class="creator-create-button"
+                >
+                    Create Shirt
+                </a>
+
+            </div>
+
+
+            {% if shirts %}
+
+                <div
+                    style="
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 14px;
+                        align-items: flex-start;
+                    "
+                >
+
+                    {% for shirt in shirts %}
+
+                        <div
+                            style="
+                                width: 190px;
+                                box-sizing: border-box;
+                                padding: 6px;
+                                background: #ffffff;
+                                border: 1px solid #c8c8c8;
+                                overflow: hidden;
+                            "
+                        >
+
+                            <!-- PREVIEW -->
+
+                            <div
+                                style="
+                                    width: 176px;
+                                    height: 176px;
+                                    box-sizing: border-box;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    overflow: hidden;
+                                    background: #f4f4f4;
+                                    border: 1px solid #d0d0d0;
+                                "
+                            >
+
+                                {% if shirt.template_path %}
+
+                                    <img
+                                        src="{{ shirt.template_path }}"
+                                        alt="{{ shirt.name }}"
+                                        style="
+                                            display: block;
+                                            width: auto;
+                                            height: auto;
+                                            max-width: 160px;
+                                            max-height: 160px;
+                                            object-fit: contain;
+                                        "
+                                    >
+
+                                {% else %}
+
+                                    <span
+                                        style="
+                                            color: #888;
+                                            font-size: 12px;
+                                        "
+                                    >
+                                        No Preview
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <!-- NAME -->
+
+                            <div
+                                style="
+                                    width: 176px;
+                                    box-sizing: border-box;
+                                    padding: 7px 4px 3px;
+                                "
+                            >
+
+                                <a
+                                    href="#"
+                                    style="
+                                        display: block;
+                                        color: #1675d1;
+                                        font-size: 13px;
+                                        text-decoration: underline;
+                                        white-space: nowrap;
+                                        overflow: hidden;
+                                        text-overflow: ellipsis;
+                                    "
+                                >
+                                    {{ shirt.name }}
+                                </a>
+
+                            </div>
+
+
+                            <!-- PRICE -->
+
+                            <div
+                                style="
+                                    width: 176px;
+                                    box-sizing: border-box;
+                                    padding: 2px 4px 5px;
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 5px;
+                                    color: #444;
+                                    font-size: 12px;
+                                "
+                            >
+
+                                {% if shirt.currency == "webbux" %}
+
+                                    <img
+                                        src="/static/webbux_28.png"
+                                        alt="WebBux"
+                                        style="
+                                            width: 28px;
+                                            height: 28px;
+                                            object-fit: contain;
+                                            display: block;
+                                            flex-shrink: 0;
+                                        "
+                                    >
+
+                                    <span>
+                                        {{ shirt.price }} WebBux
+                                    </span>
+
+                                {% else %}
+
+                                    <img
+                                        src="/static/tix_28.png"
+                                        alt="Tix"
+                                        style="
+                                            width: 28px;
+                                            height: 28px;
+                                            object-fit: contain;
+                                            display: block;
+                                            flex-shrink: 0;
+                                        "
+                                    >
+
+                                    <span>
+                                        {{ shirt.price }} Tix
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="creator-empty">
+
+                    <h2>No shirts yet</h2>
+
+                    <p>
+                        Create your first shirt for your WebRuse avatar.
+                    </p>
+
+                    <a
+                        href="/create/item/shirt"
+                        class="creator-create-button"
+                    >
+                        Create Shirt
+                    </a>
+
+                </div>
+
+            {% endif %}
+
+        </main>
+
+    </div>
+
+</section>
+
+{% endblock %}

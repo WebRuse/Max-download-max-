@@ -1,0 +1,1207 @@
+{% extends "base.html" %}
+
+{% block title %}WebRuse — Profile{% endblock %}
+
+{% block content %}
+
+<section class="profile">
+
+
+<h1>{{ user.username }}</h1>
+<p>WebRuse Player Profile</p>
+
+<div id="webgl-avatar">
+
+    <div class="webgl-loading">
+        Loading 3D avatar...
+    </div>
+
+    <div class="webgl-hint">
+        🖱️ Drag with the mouse — rotate<br>
+        🔍 Scroll wheel — zoom
+    </div>
+
+</div>
+
+<div class="avatar-controls">
+
+    <button
+        type="button"
+        class="button"
+        onclick="resetCamera()"
+    >
+        Reset Camera
+    </button>
+
+</div>
+
+
+<div class="currency-box">
+
+    <div class="currency tix">
+        <img src="/static/tix_28.png" alt="Tix">
+        <span>{{ user.tix }} Tix</span>
+    </div>
+
+    <div class="currency webbux">
+        <img src="/static/webbux_28.png" alt="WebBux">
+        <span>{{ user.webbux }} WebBux</span>
+    </div>
+
+</div>
+
+
+<div class="stat">
+    <strong>Username:</strong> {{ user.username }}
+</div>
+
+<div class="stat">
+    <strong>Email:</strong> {{ user.email }}
+</div>
+
+<div class="stat">
+    <strong>Account ID:</strong> {{ user.id }}
+</div>
+
+<div class="stat">
+    <strong>Status:</strong> Online
+</div>
+
+
+<h2 class="avatar-title">
+    Skin Tone
+</h2>
+
+<div class="skin-tone-grid">
+
+    {% for avatar in avatars %}
+
+    <button
+        type="button"
+        class="skin-tone-button {% if user.avatar == avatar %}selected{% endif %}"
+        data-avatar="{{ avatar }}"
+        onclick="selectAvatar('{{ avatar }}')"
+        title="{{ avatar|replace('_', ' ')|title }}"
+    >
+        <span class="skin-tone-color skin-{{ avatar }}"></span>
+    </button>
+
+    {% endfor %}
+
+</div>
+
+<div id="avatar-message" class="message"></div>
+
+
+<br>
+
+
+<button
+    onclick="logout()"
+    class="button button-secondary"
+>
+    Logout
+</button>
+
+
+</section>
+
+<style>
+
+#webgl-avatar {
+
+    width: 100%;
+    max-width: 720px;
+    height: 560px;
+
+    margin: 30px auto;
+
+    position: relative;
+
+    overflow: hidden;
+
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #dceeff 0%,
+            #f5f9ff 65%,
+            #d8e5ef 100%
+        );
+
+    border: 1px solid rgba(0,0,0,0.12);
+
+    box-shadow:
+        0 12px 35px rgba(0,0,0,0.18);
+
+    cursor: grab;
+
+    touch-action: none;
+}
+
+
+#webgl-avatar:active {
+    cursor: grabbing;
+}
+
+
+#webgl-avatar canvas {
+
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+}
+
+
+.webgl-loading {
+
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    z-index: 5;
+
+    padding: 12px 20px;
+
+    border-radius: 8px;
+
+    background: rgba(255,255,255,0.9);
+
+    font-weight: bold;
+
+}
+
+
+.webgl-hint {
+
+    position: absolute;
+
+    left: 15px;
+    bottom: 15px;
+
+    z-index: 5;
+
+    padding: 9px 13px;
+
+    border-radius: 7px;
+
+    background: rgba(255,255,255,0.88);
+
+    font-size: 13px;
+
+    line-height: 1.5;
+
+    pointer-events: none;
+
+}
+
+
+.avatar-controls {
+
+    display: flex;
+
+    justify-content: center;
+
+    margin-bottom: 15px;
+
+}
+
+.currency-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.currency {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-weight: bold;
+}
+
+.currency img {
+    width: 28px;
+    height: 28px;
+    display: block;
+    object-fit: contain;
+}
+
+/* Tix */
+.currency.tix {
+    margin: 0;
+}
+
+/* WebBux */
+.currency.webbux {
+    margin: 0;
+    background: #e7f1ff;
+    border: 1px solid #8fb9e8;
+    color: #245b91;
+}
+
+.currency img {
+    width: 28px;
+    height: 28px;
+    display: block;
+    object-fit: contain;
+}
+
+.currency.tix {
+    margin: 0;
+}
+
+</style>
+
+<style>
+
+.skin-tone-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 42px);
+    gap: 10px;
+    justify-content: center;
+    margin: 20px auto 25px;
+}
+
+.skin-tone-button {
+    width: 42px;
+    height: 42px;
+
+    padding: 0;
+
+    border: 2px solid #c7c7c7;
+    border-radius: 50%;
+
+    background: #ffffff;
+
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition:
+        transform 0.12s ease,
+        border-color 0.12s ease;
+}
+
+.skin-tone-button:hover {
+    transform: scale(1.08);
+    border-color: #777;
+}
+
+.skin-tone-button.selected {
+    border: 3px solid #222;
+}
+
+.skin-tone-color {
+    width: 32px;
+    height: 32px;
+
+    display: block;
+
+    border-radius: 50%;
+}
+
+
+/* SKIN TONES */
+
+.skin-skin_very_light {
+    background: #FFF1E6;
+}
+
+.skin-skin_light {
+    background: #F8D8C0;
+}
+
+.skin-skin_light_warm {
+    background: #F2C6A5;
+}
+
+.skin-skin_light_tan {
+    background: #E8B58F;
+}
+
+.skin-skin_tan {
+    background: #D9A074;
+}
+
+.skin-skin_medium_light {
+    background: #D09268;
+}
+
+.skin-skin_medium {
+    background: #C08058;
+}
+
+.skin-skin_medium_warm {
+    background: #B8734F;
+}
+
+.skin-skin_medium_tan {
+    background: #A96845;
+}
+
+.skin-skin_warm_brown {
+    background: #995C3D;
+}
+
+.skin-skin_brown {
+    background: #875036;
+}
+
+.skin-skin_dark_brown {
+    background: #74422F;
+}
+
+.skin-skin_deep_brown {
+    background: #633827;
+}
+
+.skin-skin_deep {
+    background: #522E22;
+}
+
+.skin-skin_very_deep {
+    background: #43251D;
+}
+
+.skin-skin_very_deep_warm {
+    background: #351D18;
+}
+
+</style>
+
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.0/examples/jsm/"
+  }
+}
+</script>
+
+
+<script type="module">
+
+
+import * as THREE from "three";
+import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
+
+
+const container =
+    document.getElementById("webgl-avatar");
+
+
+const loading =
+    document.querySelector(".webgl-loading");
+
+
+const currentAvatar =
+    "{{ user.avatar }}";
+
+
+/*
+=========================================
+SCENE
+=========================================
+*/
+
+
+const scene =
+    new THREE.Scene();
+
+
+scene.background =
+    new THREE.Color(0xdceeff);
+
+
+/*
+=========================================
+CAMERA
+=========================================
+*/
+
+
+const camera =
+    new THREE.PerspectiveCamera(
+        45,
+        container.clientWidth /
+        container.clientHeight,
+        0.1,
+        100
+    );
+
+
+camera.position.set(
+    4.8,
+    3.1,
+    7
+);
+
+
+/*
+=========================================
+RENDERER
+=========================================
+*/
+
+
+const renderer =
+    new THREE.WebGLRenderer({
+        antialias: true
+    });
+
+
+renderer.setPixelRatio(
+    Math.min(
+        window.devicePixelRatio,
+        2
+    )
+);
+
+
+renderer.setSize(
+    container.clientWidth,
+    container.clientHeight
+);
+
+
+renderer.shadowMap.enabled = true;
+
+
+renderer.shadowMap.type =
+    THREE.PCFSoftShadowMap;
+
+
+container.appendChild(
+    renderer.domElement
+);
+
+
+/*
+=========================================
+LIGHTING
+=========================================
+*/
+
+
+const ambientLight =
+    new THREE.HemisphereLight(
+        0xffffff,
+        0x8899aa,
+        2.2
+    );
+
+
+scene.add(ambientLight);
+
+
+const mainLight =
+    new THREE.DirectionalLight(
+        0xffffff,
+        3
+    );
+
+
+mainLight.position.set(
+    5,
+    8,
+    6
+);
+
+
+mainLight.castShadow = true;
+
+
+scene.add(mainLight);
+
+
+const fillLight =
+    new THREE.DirectionalLight(
+        0xffffff,
+        1
+    );
+
+
+fillLight.position.set(
+    -5,
+    3,
+    -4
+);
+
+
+scene.add(fillLight);
+
+
+/*
+=========================================
+AVATAR GROUP
+=========================================
+*/
+
+
+const avatar =
+    new THREE.Group();
+
+
+scene.add(avatar);
+
+
+/*
+=========================================
+COLORS
+=========================================
+*/
+
+
+const avatarColors = {
+
+    skin_very_light: 0xFFF1E6,
+    skin_light: 0xF8D8C0,
+    skin_light_warm: 0xF2C6A5,
+    skin_light_tan: 0xE8B58F,
+
+    skin_tan: 0xD9A074,
+    skin_medium_light: 0xD09268,
+    skin_medium: 0xC08058,
+    skin_medium_warm: 0xB8734F,
+
+    skin_medium_tan: 0xA96845,
+    skin_warm_brown: 0x995C3D,
+    skin_brown: 0x875036,
+    skin_dark_brown: 0x74422F,
+
+    skin_deep_brown: 0x633827,
+    skin_deep: 0x522E22,
+    skin_very_deep: 0x43251D,
+    skin_very_deep_warm: 0x351D18
+
+};
+
+
+let skinColor =
+    avatarColors[currentAvatar]
+    || avatarColors.default;
+
+
+/*
+=========================================
+MATERIALS
+=========================================
+*/
+
+
+const skinMaterial =
+    new THREE.MeshStandardMaterial({
+
+        color: skinColor,
+
+        roughness: 0.72,
+
+        metalness: 0.02
+
+    });
+
+
+const shirtMaterial =
+    new THREE.MeshStandardMaterial({
+
+        color: 0x4a74a8,
+
+        roughness: 0.8
+
+    });
+
+
+const pantsMaterial =
+    new THREE.MeshStandardMaterial({
+
+        color: 0x303947,
+
+        roughness: 0.85
+
+    });
+
+
+/*
+=========================================
+BLOCK CREATOR
+=========================================
+*/
+
+
+function createBlock(
+    width,
+    height,
+    depth,
+    material,
+    x,
+    y,
+    z
+) {
+
+    const geometry =
+    new RoundedBoxGeometry(
+        width,
+        height,
+        depth,
+        4,
+        0.08
+    );
+
+
+    const mesh =
+        new THREE.Mesh(
+            geometry,
+            material
+        );
+
+
+    mesh.position.set(
+        x,
+        y,
+        z
+    );
+
+
+    mesh.castShadow = true;
+
+    mesh.receiveShadow = true;
+
+
+    avatar.add(mesh);
+
+
+    return mesh;
+}
+
+
+/*
+=========================================
+BODY
+=========================================
+*/
+
+
+
+/* TORSO */
+const torso = createBlock(
+    1.65, 2.05, 0.9,
+    shirtMaterial,
+    0, 2.55, 0
+);
+
+/* HEAD */
+const head = createBlock(
+    1.35, 1.35, 1.15,
+    skinMaterial,
+    0, 4.30, 0
+);
+
+
+/* DEFAULT 2D AVATAR FACE */
+
+const faceTexture = new THREE.TextureLoader().load(
+    "/static/Deafult_Face.png"
+);
+
+faceTexture.colorSpace = THREE.SRGBColorSpace;
+
+const faceMaterial = new THREE.MeshBasicMaterial({
+    map: faceTexture,
+    transparent: true,
+    depthWrite: false
+});
+
+const faceGeometry = new THREE.PlaneGeometry(0.82, 0.82);
+
+const avatarFace = new THREE.Mesh(faceGeometry, faceMaterial);
+avatarFace.position.set(0, 4.30, 0.59);
+avatar.add(avatarFace);
+
+/* ARMS */
+const leftArm = createBlock(
+    0.72, 2.15, 0.78,
+    skinMaterial,
+    -1.18, 2.55, 0
+);
+
+const rightArm = createBlock(
+    0.72, 2.15, 0.78,
+    skinMaterial,
+    1.18, 2.55, 0
+);
+
+
+/* LEGS */
+const leftLeg = createBlock(
+    0.78, 1.95, 0.78,
+    pantsMaterial,
+    -0.42, 0.58, 0
+);
+
+const rightLeg = createBlock(
+    0.78, 1.95, 0.78,
+    pantsMaterial,
+    0.42, 0.58, 0
+);
+
+
+
+/*
+=========================================
+GROUND
+=========================================
+*/
+
+
+const groundGeometry =
+    new THREE.CircleGeometry(
+        4.5,
+        64
+    );
+
+
+const groundMaterial =
+    new THREE.MeshStandardMaterial({
+
+        color: 0xc9d5df,
+
+        roughness: 1
+
+    });
+
+
+const ground =
+    new THREE.Mesh(
+        groundGeometry,
+        groundMaterial
+    );
+
+
+ground.rotation.x =
+    -Math.PI / 2;
+
+
+ground.position.y =
+    -0.47;
+
+
+ground.receiveShadow = true;
+
+
+scene.add(ground);
+
+
+/*
+=========================================
+AVATAR POSITION
+=========================================
+*/
+
+
+avatar.position.y =
+    0.05;
+
+
+/*
+=========================================
+ROTATION
+=========================================
+*/
+
+
+let rotationX =
+    0.12;
+
+
+let rotationY =
+    0.45;
+
+
+let zoom =
+    7;
+
+
+let dragging =
+    false;
+
+
+let previousX =
+    0;
+
+
+let previousY =
+    0;
+
+
+function updateAvatar() {
+
+    avatar.rotation.x =
+        rotationX;
+
+    avatar.rotation.y =
+        rotationY;
+
+}
+
+
+updateAvatar();
+
+
+/*
+=========================================
+MOUSE DRAG
+=========================================
+*/
+
+
+container.addEventListener(
+    "pointerdown",
+    function(event) {
+
+        dragging = true;
+
+        previousX =
+            event.clientX;
+
+        previousY =
+            event.clientY;
+
+        container.setPointerCapture(
+            event.pointerId
+        );
+
+    }
+);
+
+
+container.addEventListener(
+    "pointermove",
+    function(event) {
+
+        if (!dragging) {
+            return;
+        }
+
+
+        const deltaX =
+            event.clientX - previousX;
+
+
+        const deltaY =
+            event.clientY - previousY;
+
+
+        rotationY +=
+            deltaX * 0.012;
+
+
+        rotationX +=
+            deltaY * 0.008;
+
+
+        rotationX =
+            Math.max(
+                -0.45,
+                Math.min(
+                    0.45,
+                    rotationX
+                )
+            );
+
+
+        previousX =
+            event.clientX;
+
+        previousY =
+            event.clientY;
+
+
+        updateAvatar();
+
+    }
+);
+
+
+container.addEventListener(
+    "pointerup",
+    function() {
+
+        dragging = false;
+
+    }
+);
+
+
+container.addEventListener(
+    "pointercancel",
+    function() {
+
+        dragging = false;
+
+    }
+);
+
+
+/*
+=========================================
+ZOOM
+=========================================
+*/
+
+
+container.addEventListener(
+    "wheel",
+    function(event) {
+
+        event.preventDefault();
+
+
+        zoom +=
+            event.deltaY * 0.008;
+
+
+        zoom =
+            Math.max(
+                4.5,
+                Math.min(
+                    11,
+                    zoom
+                )
+            );
+
+    },
+    {
+        passive: false
+    }
+);
+
+
+/*
+=========================================
+RESET
+=========================================
+*/
+
+
+window.resetCamera =
+    function() {
+
+        rotationX =
+            0.12;
+
+        rotationY =
+            0.45;
+
+        zoom =
+            7;
+
+        updateAvatar();
+
+    };
+
+
+/*
+=========================================
+CHANGE AVATAR COLOR
+=========================================
+*/
+
+
+window.selectAvatar =
+    async function(avatarName) {
+
+        const message =
+            document.getElementById(
+                "avatar-message"
+            );
+
+
+        message.style.display =
+            "block";
+
+
+        message.innerText =
+            "Saving avatar...";
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/avatar",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            avatar:
+                                avatarName
+                        })
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                message.innerText =
+                    data.detail ||
+                    "Could not change avatar.";
+
+                return;
+
+            }
+
+
+            skinColor =
+                avatarColors[avatarName]
+                || avatarColors.default;
+
+
+            skinMaterial.color.setHex(
+                skinColor
+            );
+
+
+            document
+                .querySelectorAll(
+                    ".avatar-option"
+                )
+                .forEach(
+                    function(button) {
+
+                        button.classList.remove(
+                            "selected"
+                        );
+
+                    }
+                );
+
+
+            const selectedButton =
+                document.querySelector(
+                    '[data-avatar="' +
+                    avatarName +
+                    '"]'
+                );
+
+
+            if (selectedButton) {
+
+                selectedButton.classList.add(
+                    "selected"
+                );
+
+            }
+
+
+            message.innerText =
+                "Avatar saved!";
+
+
+        } catch (error) {
+
+            message.innerText =
+                "Could not connect to WebRuse.";
+
+        }
+
+    };
+
+
+/*
+=========================================
+RESIZE
+=========================================
+*/
+
+
+window.addEventListener(
+    "resize",
+    function() {
+
+        camera.aspect =
+            container.clientWidth /
+            container.clientHeight;
+
+
+        camera.updateProjectionMatrix();
+
+
+        renderer.setSize(
+            container.clientWidth,
+            container.clientHeight
+        );
+
+    }
+);
+
+
+
+/*
+=========================================
+ANIMATION
+=========================================
+*/
+
+
+function animate() {
+
+    requestAnimationFrame(
+        animate
+    );
+
+
+    camera.position.set(
+        Math.sin(0) * zoom,
+        3.1,
+        zoom
+    );
+
+
+    camera.lookAt(
+        0,
+        2.3,
+        0
+    );
+
+
+    renderer.render(
+        scene,
+        camera
+    );
+
+}
+
+
+loading.style.display =
+    "none";
+
+
+animate();
+
+
+</script>
+
+{% endblock %}
+

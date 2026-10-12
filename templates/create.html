@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}WebRuse — Create{% endblock %}
+
+{% block content %}
+
+<section class="creator-page">
+
+    <div class="creator-tabs">
+
+        <a href="/create" class="creator-tab active">
+            My Creations
+        </a>
+
+        <a href="#" class="creator-tab">
+            Group Creations
+        </a>
+
+        <a href="#" class="creator-tab">
+            Library
+        </a>
+
+        <a href="#" class="creator-tab">
+            Stats
+        </a>
+
+    </div>
+
+    <div class="creator-layout">
+
+        <aside class="creator-sidebar">
+
+            <h2>Creations</h2>
+
+            <a href="/create" class="creator-side-link active">
+                Items
+            </a>
+
+           <a href="/create/shirts" class="creator-side-link">
+    Shirts
+</a>
+
+            <a href="#" class="creator-side-link">
+                Pants
+            </a>
+
+        </aside>
+
+        <main class="creator-content">
+
+            <div class="creator-header">
+
+                <div>
+                    <h1>My Creations</h1>
+
+                    <p>
+                        Create and manage your WebRuse items.
+                    </p>
+                </div>
+
+               <a
+    href="/create/item"
+    class="creator-create-button"
+>
+    Create New Item
+</a>
+
+            </div>
+
+            <div class="creator-empty">
+
+                <h2>No creations yet</h2>
+
+                <p>
+                    Create your first shirt or pants item for your avatar.
+                </p>
+
+                <a
+    href="/create/item"
+    class="creator-create-button"
+>
+    Create New Item
+</a>
+
+            </div>
+
+        </main>
+
+    </div>
+
+</section>
+
+{% endblock %}

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}WebRuse{% endblock %}</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+    <header class="topbar">
+        <div class="topbar-inner">
+
+            <a href="/" class="logo">
+                WebRuse
+            </a>
+
+            <nav class="nav">
+    <a href="/">Home</a>
+    <a href="/games">Games</a>
+    <a href="/inventory">Inventory</a>
+    <a href="/catalog">Catalog</a>
+    <a href="/create">Create</a>
+    <a href="/profile">Profile</a>
+</nav>
+
+        </div>
+    </header>
+
+
+    <main class="main">
+
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+
+    <footer class="footer">
+        <div class="footer-inner">
+            <span>WebRuse</span>
+            <span>Fan-made revival project</span>
+        </div>
+    </footer>
+
+</body>
+</html>

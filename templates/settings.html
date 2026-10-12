@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+
+{% block title %}WebRuse — Settings{% endblock %}
+
+{% block content %}
+
+<section
+    style="
+        max-width: 760px;
+        margin: 30px auto;
+        background: #fff;
+        border: 1px solid #c8c8c8;
+        box-sizing: border-box;
+    "
+>
+
+    <div
+        style="
+            padding: 12px 16px;
+            background: #f1f1f1;
+            border-bottom: 1px solid #c8c8c8;
+        "
+    >
+        <h1
+            style="
+                margin: 0;
+                font-size: 22px;
+            "
+        >
+            Settings
+        </h1>
+    </div>
+
+
+    <!-- ACCOUNT -->
+
+    <div
+        style="
+            padding: 20px;
+            border-bottom: 1px solid #ddd;
+        "
+    >
+
+        <h2
+            style="
+                margin: 0 0 5px 0;
+                font-size: 17px;
+            "
+        >
+            Account
+        </h2>
+
+        <p
+            style="
+                margin: 0 0 15px 0;
+                color: #777;
+                font-size: 13px;
+            "
+        >
+            Manage your WebRuse account.
+        </p>
+
+
+        <!-- USERNAME -->
+
+        <a
+            href="/settings/username"
+            style="
+                display: block;
+                padding: 13px;
+                border: 1px solid #ddd;
+                background: #fafafa;
+                text-decoration: none;
+                color: #222;
+                margin-bottom: 8px;
+            "
+        >
+
+            <strong>
+                Change Username
+            </strong>
+
+            <div
+                style="
+                    margin-top: 4px;
+                    color: #777;
+                    font-size: 12px;
+                "
+            >
+                Current username:
+                {{ user.username }}
+            </div>
+
+        </a>
+
+
+        <!-- PASSWORD -->
+
+        <a
+            href="/settings/password"
+            style="
+                display: block;
+                padding: 13px;
+                border: 1px solid #ddd;
+                background: #fafafa;
+                text-decoration: none;
+                color: #222;
+                margin-bottom: 8px;
+            "
+        >
+
+            <strong>
+                Change Password
+            </strong>
+
+            <div
+                style="
+                    margin-top: 4px;
+                    color: #777;
+                    font-size: 12px;
+                "
+            >
+                Change your account password.
+            </div>
+
+        </a>
+
+
+        <!-- DATE OF BIRTH -->
+
+        <div
+            style="
+                display: block;
+                padding: 13px;
+                border: 1px solid #ddd;
+                background: #fafafa;
+            "
+        >
+
+            <strong>
+                Date of Birth
+            </strong>
+
+            <div
+                style="
+                    margin-top: 4px;
+                    color: #777;
+                    font-size: 12px;
+                "
+            >
+                Your date of birth is stored on your account.
+            </div>
+
+            {% if user.birth_date %}
+
+                <div
+                    style="
+                        margin-top: 8px;
+                        font-size: 13px;
+                    "
+                >
+                    Current date:
+                    <strong>
+                        {{ user.birth_date.strftime("%Y-%m-%d") }}
+                    </strong>
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <!-- SESSION -->
+
+    <div
+        style="
+            padding: 20px;
+        "
+    >
+
+        <h2
+            style="
+                margin: 0 0 5px 0;
+                font-size: 17px;
+            "
+        >
+            Session
+        </h2>
+
+        <p
+            style="
+                margin: 0 0 15px 0;
+                color: #777;
+                font-size: 13px;
+            "
+        >
+            Manage your current WebRuse session.
+        </p>
+
+        <button
+            type="button"
+            onclick="logout()"
+            style="
+                padding: 9px 18px;
+                border: 1px solid #aaa;
+                background: #e8e8e8;
+                cursor: pointer;
+                font-weight: bold;
+            "
+        >
+            Logout
+        </button>
+
+    </div>
+
+</section>
+
+
+<script>
+
+async function logout() {
+
+    const confirmed =
+        confirm(
+            "Are you sure you want to log out?"
+        );
+
+    if (!confirmed) {
+        return;
+    }
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/logout",
+                {
+                    method: "POST"
+                }
+            );
+
+        if (response.ok) {
+
+            window.location.href =
+                "/login";
+
+            return;
+        }
+
+        alert(
+            "Failed to log out."
+        );
+
+    } catch (error) {
+
+        alert(
+            "Something went wrong."
+        );
+
+    }
+
+}
+
+</script>
+
+{% endblock %}

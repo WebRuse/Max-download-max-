@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}WebRuse — Home{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+    <div class="hero-content">
+
+        <div class="hero-badge">
+            WEBRUSE
+        </div>
+
+        <h1>
+            Welcome to WebRuse
+        </h1>
+
+        <p>
+            Bringing back the atmosphere of classic gaming platforms
+            in a new fan-made project.
+        </p>
+
+        <div class="hero-actions">
+            <a href="/register" class="button button-primary">
+                Create Account
+            </a>
+
+            <a href="/login" class="button button-secondary">
+                Login
+            </a>
+        </div>
+
+    </div>
+</section>
+
+
+<section class="cards">
+
+    <div class="card">
+        <div class="card-icon">👤</div>
+
+        <h2>Your Profile</h2>
+
+        <p>
+            Create an account, customize your profile and choose your avatar.
+        </p>
+
+        <a href="/profile" class="card-link">
+            Open Profile →
+        </a>
+    </div>
+
+
+    <div class="card">
+        <div class="card-icon">🎒</div>
+
+        <h2>Inventory</h2>
+
+        <p>
+            Collect items and manage your collection.
+        </p>
+
+        <a href="/inventory" class="card-link">
+            Open Inventory →
+        </a>
+    </div>
+
+
+    <div class="card">
+        <div class="card-icon">🎮</div>
+
+        <h2>Games</h2>
+
+        <p>
+            Explore available WebRuse games and join them.
+        </p>
+
+        <a href="/games" class="card-link">
+            Browse Games →
+        </a>
+    </div>
+
+</section>
+
+{% endblock %}
